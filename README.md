@@ -2,8 +2,8 @@
  2019暑假在北京中科院实习经历
 
 
-
 ![ResNet50流程图](image/ResNet.JPG);
+
 /*****************************************7.9周三********************************************/
 '''argparse 命令行参数解析包：同时也将opt.model等赋初值 可以直接调用'''
 import argparse #命令行参数解析
@@ -17,7 +17,7 @@ parser.add_argument('--resume', '-r', action='store_true', help='resume from che
 opt = parser.parse_args()
 path = os.path.join(opt.homepath+opt.dataset + '_' + opt.model)
 
-'''h5py 数据集的读取和写入'''csdn基本操作
+h5py 数据集的读取和写入'''csdn基本操作
 
 import h5py
 datafile = h5py.File(datapath, 'w')
