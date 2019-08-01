@@ -18,25 +18,25 @@ class BasicBlock(nn.Module):
 
     def __init__(self, in_planes, planes, stride=1):
         super(BasicBlock, self).__init__()
-        self.conv1 = nn.Conv2d(in_planes, planes, kernel_size=3, stride=stride, padding=1, bias=False)
+        self.conv1 = nn.Conv2d(in_planes, planes, kernel_size=3, stride=stride, padding=1, bias=False) #步长外部传进来
         self.bn1 = nn.BatchNorm2d(planes)
         self.conv2 = nn.Conv2d(planes, planes, kernel_size=3, stride=1, padding=1, bias=False)
         self.bn2 = nn.BatchNorm2d(planes)
         '''
-        1、如果残差计算输出与原输出大小不一致则在shortcut一路多加一次conv+BN 使得out += self.shortcut(x)公式得以成立
-        2、 
+        downsample部分
+        1、如果输入通道数与输出通道数不等时
+        2、步长不为1时
         '''
         self.shortcut = nn.Sequential()
-        if stride != 1 or in_planes != self.expansion*planes:#如果残差计算输出与原输出大小不一致
-            self.shortcut = nn.Sequential(#原结果多加一个卷积 具体见图片
+        if stride != 1 or in_planes != self.expansion*planes:
+            self.shortcut = nn.Sequential(
                 nn.Conv2d(in_planes, self.expansion*planes, kernel_size=1, stride=stride, bias=False),
                 nn.BatchNorm2d(self.expansion*planes)
             )
-    #resnet1.0 左 Basic方法
     def forward(self, x):
-        out = F.relu(self.bn1(self.conv1(x)))#每一层的第一个残差块的stride 由self.layer(n)传入
-        out = self.bn2(self.conv2(out))#之后的 stride=1 不影响图像大小
-        out += self.shortcut(x)
+        out = F.relu(self.bn1(self.conv1(x)))# 经卷积 bn relu
+        out = self.bn2(self.conv2(out))
+        out += self.shortcut(x)    #与残差相加
         out = F.relu(out)
         return out
 
