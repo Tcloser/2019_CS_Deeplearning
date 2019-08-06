@@ -1,5 +1,5 @@
 from __future__ import print_function
-from PIL import Image
+from   PIL import Image
 import torch
 from   torch.autograd import Variable
 import torch.nn as nn
@@ -18,6 +18,7 @@ from resnet_model.resnet import  resnet18
 
 unloader = transforms.ToPILImage()
 
+'''参数初始化 路径初始化'''
 def para_init():
     global label_exp,para_batchsize,para_learningrate,train_pic_read_path,train_para_path,predict_read_path,predict_save_path
     
@@ -65,11 +66,9 @@ def train(save_path, pretrained_path):
         ])
 
     trainset = Studentsface_Dataset(transform=transform)
-    trainloader = torch.utils.data.DataLoader(trainset, batch_size=para_batchsize,  #应该扩充了维度([20，3，224，224])
+    trainloader = torch.utils.data.DataLoader(trainset, batch_size=para_batchsize,  #应该扩充了维度([20，3，224，224]) 这里读取了dataset中的总长度__len__
                                             shuffle=True, num_workers=2)
     
-    #print(trainloader)
-    #resnet_constructor
     model = resnet18(num_classes=len(label_exp))
     #model = nn.DataParallel(model)#key 并行计算
     
@@ -95,9 +94,6 @@ def train(save_path, pretrained_path):
     #train
     for epoch in range(15):  # loop over the dataset multiple times
         
-        # running_loss = 0.0
-        # running_acc = 0.0
-
         correct = 0
         train_loss = 0
         total = 0
@@ -217,7 +213,6 @@ def main():
     train(save_path=train_para_path,pretrained_path = "")
     #load_pretrained_model(pretrained_path = "/home/dooncloud/桌面/practice/8.5face_reg_three_emotion/train_pic/tmp/Studentsface.t7")
     #predictor()
-    # print(len(label_exp))
 
 if __name__ == '__main__':
     main()
